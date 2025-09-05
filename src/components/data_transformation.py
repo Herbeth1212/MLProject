@@ -16,24 +16,25 @@ class DataTransformationConfig:
     preprocessor_obj_file_path = os.path.join('artifacts',"proprocessor.pkl")
 
 class DataTransformation:
-    def _init_(self):
+    def __init__(self):
         self.data_transformation_config = DataTransformationConfig()
+
 
     def get_data_transformer_object(self):
         try:
             numerical_columns = ["writing_score","reading_score"]
-            categorical_columns = ["gender", "race_ethinicity", "parental_level_of_education", "lunch", "test_preparation_course"]
+            categorical_columns = ["gender", "race_ethnicity", "parental_level_of_education", "lunch", "test_preparation_course"]
             num_pipeline = Pipeline(
                 steps=[
                     ("imputer",SimpleImputer(strategy="median")),
-                    ("scaler",StandardScaler)
+                    ("scaler",StandardScaler(with_mean=False))
                 ]
             )
             cat_pipeline = Pipeline(
                 steps=[
                     ("imputer",SimpleImputer(strategy="most_frequent")),
-                    ("one_hot_encoder",OneHotEncoder()),
-                    ("scaler",StandardScaler())
+                    ("one_hot_encoder",OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
+                    ("scaler",StandardScaler(with_mean=False))
                 ]
             )
             logging.info("Numerical columns standard scaling completed")
